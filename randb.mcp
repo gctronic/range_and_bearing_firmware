@@ -1,6 +1,7 @@
 [HEADER]
 magic_cookie={66E99B07-E706-4689-9E80-9B2582898A13}
 file_version=1.0
+device=dsPIC33FJ256GP710
 [PATH_INFO]
 BuildDirPolicy=BuildDirIsProjectDir
 dir_src=
@@ -116,8 +117,8 @@ file_017=queue.h
 file_018=registers.h
 file_019=SPIMasterDrv.h
 file_020=UARTDrv.h
-file_021=C:\Archivos de programa\Microchip\MPLAB C30\lib\dsPIC33F\libp33FJ256GP710-coff.a
-file_022=C:\Archivos de programa\Microchip\MPLAB C30\support\dsPIC33F\gld\p33FJ256GP710.gld
+file_021=C:\Program Files (x86)\Microchip\mplabc30\v3.31\lib\dsPIC33F\libp33FJ256GP710-coff.a
+file_022=C:\Program Files (x86)\Microchip\mplabc30\v3.31\support\dsPIC33F\gld\p33FJ256GP710.gld
 [SUITE_INFO]
 suite_guid={479DDE59-4D56-455E-855E-FFF59A3DB57E}
 suite_state=

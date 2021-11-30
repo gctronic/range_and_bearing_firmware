@@ -47,12 +47,17 @@ void init_PWM( void ){
 	 * PR2 = 42 --> OC1R and OC1RS = 21
      * 
      * */
+
+	// Stefano Morgani: the Fosc was setup to be 80 MHz, not 40 MHz, see "ports.c".
 	T2CONbits.TCKPS = 0; // Select 1:1 Prescaler
-	PR2 = 84; // Load the period value
+	//PR2 = 84; // Load the period value
+	PR2 = 89; //Stefano Morgani: to actually get 455 KHz
 	
 	OC1CONbits.OCM = 0; // Disable Output Compare Module
-	OC1R = 42; // Write the duty cycle for the first PWM pulse
-	OC1RS = 42; // Write the duty cycle for the second PWM pul
+	//OC1R = 42; // Write the duty cycle for the first PWM pulse
+	OC1R = 44; // Stefano Morgani: to actually get 455 KHz
+	//OC1RS = 42; // Write the duty cycle for the second PWM pul
+	OC1RS = 44; // Stefano Morgani: to actually get 455 KHz
 	OC1CONbits.OCTSEL = 0; // Select Timer 2 as output compare time base
 	OC1CONbits.OCM = 0b110; // Select the Output Compare mode	
 	
@@ -83,7 +88,7 @@ void init_T1( void ){
 	 * Tirdata(20Khz) = 50us
 	 * PR1 = Tirdata / Tcy = 1000 */
 	TMR1=  0x0000;  	
-	PR1 = 4000;           // Timer1 period register = ?????
+	PR1 = 4000;           // Timer1 period register = (80MHz/2)/4000=100us
 	/* Enable Timer1 and start the counter */
 	T1CONbits.TON = 1;      
 	
@@ -97,7 +102,8 @@ void init_Emmision( void ){
 void __attribute__((__interrupt__, no_auto_psv)) _T2Interrupt( void )
 {
 	/* Interrupt Service Routine code goes here */
-	OC1RS = 42; // Write Duty Cycle value for next PWM cycle
+	//OC1RS = 42; // Write Duty Cycle value for next PWM cycle
+	OC1RS = 44; //Stefano Morgani: to actually get 455 KHz
 	IFS0bits.T2IF = 0; // Clear Timer 2 interrupt flag
 }
 

@@ -434,11 +434,13 @@ void __attribute__((__interrupt__, no_auto_psv)) _T3Interrupt(void)
 			if ( preambleReceived == FALSE )
 			{
 				counterPreambleStart++;
-				if ( counterPreambleStart == 3 ){
-					DisableAllIrPeaks();
- 				}
+				//if ( counterPreambleStart == 3){ 	// Stefano Morgani: originally the "reset peak time" was 200 us ((HEADER_LENGTH2 -1) - 3 = 2 x T3 periods = 200 us)
+				//	DisableAllIrPeaks();			// When the "reset peaks" are hold in reset the consumption is high, so we reduced the "reset" time to a minimum of about 1.5 us.
+ 				//}									// This is enough to actually reset the charge and the consumption is reduced as much as possible.
 				if ( counterPreambleStart == (HEADER_LENGTH2 -1) ) 
 				{
+					DisableAllIrPeaks();						// Stefano Morgani: "reset peaks" time is about 1.5 us.
+					for (i = 0; i < 3; i++){__asm__("nop");}	// The drawback is that we are waiting inside an interrupt.
 					EnableAllIrPeaks();
 					preambleReceived = TRUE;
 //					counterPreamble = 0;
@@ -776,7 +778,7 @@ void DecodeData ( void ) {
 				finalDataReceived.max_sensor1 = max_sensor1;
 				finalDataReceived.angle = angle;
 				/*************** DEBUG RS232 - PC *****************/
-				//sprintf(SerialTX,"%04X %2f %u \n\r ",finalDataReceived.data, (angle * 180 / 3.1415), finalDataReceived.range);
+				//sprintf(SerialTX,"%u %2f %u \n\r ",finalDataReceived.data, (angle * 180 / 3.1415), finalDataReceived.range);
 				//WriteUart2((unsigned int*) SerialTX); 
 				/*************** END DEBUG *****************/
 
@@ -814,16 +816,18 @@ void DecodeData ( void ) {
 			{
 				for( i = 0 ; i < NUM_RECEPTOR_SENSORS ; i++ )
 				{
-					/*************** DEBUG RS232 - PC *****************/
 					while(QueueEmptySingle(&queuePeakReception[i]));
 					QueueOutSingle(&queuePeakReception[i],&dataCompleatedIteration[i].distance);
-					sprintf(SerialTX,"%u  ",dataCompleatedIteration[i].distance);
-					WriteUart2((unsigned int*) SerialTX); 
+					/*************** DEBUG RS232 - PC *****************/
+					//sprintf(SerialTX,"%u  ",dataCompleatedIteration[i].distance);
+					//WriteUart2((unsigned int*) SerialTX); 
 					/*************** END DEBUG *****************/
 					//QueueOutSingle(&queuePeakReception[i],&dataCompleatedIteration[i].distance);
 				}
-				sprintf(SerialTX,"\n\r");
-				WriteUart2((unsigned int*) SerialTX); 
+				/*************** DEBUG RS232 - PC *****************/
+				//sprintf(SerialTX,"\n\r");
+				//WriteUart2((unsigned int*) SerialTX); 
+				/*************** END DEBUG *****************/
 				setAllDataReceived (dataCompleatedIteration,dataReceived);
 			}			
 		}

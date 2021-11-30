@@ -124,7 +124,7 @@ void __attribute__((__interrupt__, no_auto_psv)) _U2TXInterrupt(void)
 }
 void __attribute__((__interrupt__,no_auto_psv)) _U2RXInterrupt(void)
 {
-  	IFS1bits.U2RXIF = 0;
+  IFS1bits.U2RXIF = 0;
 	char input=0;
 	/* Read the receive buffer till atleast one or more character can be read */ 
 	input = U2RXREG;
@@ -348,7 +348,7 @@ void close_UART1 ( void )
 
 void WriteUart1 ( void ){
 	/* If something to send */
-	if (GetReceptionData( &sendData ))
+	while (GetReceptionData( &sendData ))
 	{
 		/* Point to the beginning of the struct */
 		p = (&sendData);
@@ -391,74 +391,114 @@ void __attribute__((__interrupt__,no_auto_psv)) _U1RXInterrupt(void)
 void ManageUart1Reception ( void )
 {
 	char TxData[50];
-	if(QueueStatusSingle(&UartRxReception) >= 3)
+	unsigned int start = 0;
+	unsigned int stop = 0;
+	unsigned int action;
+	unsigned int value1,value2,auxValue;
+	
+	/* DEBUG */
+	//sprintf(TxData,"IN1 \n\r");
+	//WriteUart2((unsigned int*) TxData);
+	/* DEBUG */
+
+	/* If at least 1 complete frame */
+	if(QueueStatusSingle(&UartRxReception) >= 5)
 	{
+		/* Get first data on queue */
+		QueueOutSingle(&UartRxReception,&start);
+		
+		/* DEBUG */
+		//sprintf(TxData,"IN2: %X \n\r", start&0xFF);
+		//WriteUart2((unsigned int*) TxData);
+		/* DEBUG */
 
-
-		unsigned int action;
-		QueueOutSingle(&UartRxReception,&action);
-
-		if ( action <= 18 )
+		/* If STX */
+		if ( (start & 0xFF) == 0xAA)
 		{
-			unsigned int value1,value2,auxValue;
-			QueueOutSingle(&UartRxReception,&value1);
-			QueueOutSingle(&UartRxReception,&value2);
+			/* DEBUG */
+			//sprintf(TxData,"IN3 \n\r");
+			//WriteUart2((unsigned int*) TxData);
+			/* DEBUG */
 
-			switch (action)
-			{
-				case 15:
-					WriteIrData();
-					/* DEBUG */
-					//sprintf(TxData,"WriteIrData \n\r");
-					//WriteUart2((unsigned int*) TxData);
-					/* DEBUG */
-					break;
-				case 16:
-					InitAllIrPeaks();
-					/* DEBUG */
-					sprintf(TxData,"InitAllIrPeaks \n\r");
+			/* Get second data */
+			QueueOutSingle(&UartRxReception,&action);
+			/* If less than 18, means that it is an order */
+			if ( (action & 0xFF) <= 18 )
+			{	
+				/* DEBUG */
+				//sprintf(TxData,"IN4 \n\r");
+				//WriteUart2((unsigned int*) TxData);
+				/* DEBUG */
+
+				/* Get 3rd and 4th data */
+				QueueOutSingle(&UartRxReception,&value1);
+				QueueOutSingle(&UartRxReception,&value2);
+
+				/* Get 4rd data */
+				QueueOutSingle(&UartRxReception,&stop);
+				/* If EOF */
+				if ( (stop & 0xFF) == 0x55)
+				{
+					sprintf(TxData,"DataQueue: %X %u %u %u %X\n\r", start&0xFF, action&0xFF, value1&0xFF, value2&0xFF, stop&0xFF);
 					WriteUart2((unsigned int*) TxData);
-					/* DEBUG */
-					break;
-				case 12:
-					write_SPI(value1&0xFF);
-					/* DEBUG */
-					sprintf(TxData,"WriteSPI %d \n\r",(value1 & 0xFF));
-					WriteUart2((unsigned int*) TxData);
-					/* DEBUG */
-					break;
-				case 17:
-					SetCalcOnBoard(value1&0xFF);
-					/* DEBUG */
-					sprintf(TxData,"SetCalcOnBoard %d \n\r",(value1 & 0xFF));
-					WriteUart2((unsigned int*) TxData);
-					/* DEBUG */
-					break;
-				case 14:
-					auxValue = (value1 << 8 ) + (value2 & 0xFF);
-					WriteAllIrData( auxValue );
-					/* DEBUG */
-					//sprintf(TxData,"AllIrData %u \n\r",auxValue);
-					//WriteUart2((unsigned int*) TxData);
-					/* DEBUG */
-					break;
-				case 18:
-					SetUart1Communication(value1&0xFF);
-					break;
-				default:
-					if(action < 12)	
+			
+					switch (action & 0xFF)
 					{
-						auxValue = (value1 << 8 ) + (value2 & 0xFF);
-						StoreIrData(action,auxValue);
-						/* DEBUG */
-						//sprintf(TxData,"StoreIrData %u %d \n\r ",auxValue, action);
-						//WriteUart2((unsigned int*) TxData);
-						/* DEBUG */
-					}	
-					break;
-			}
-		}
-	}
+						case 15:
+							WriteIrData();
+							/* DEBUG */
+							//sprintf(TxData,"WriteIrData \n\r");
+							//WriteUart2((unsigned int*) TxData);
+							/* DEBUG */
+							break;
+						case 16:
+							InitAllIrPeaks();
+							/* DEBUG */
+							//sprintf(TxData,"InitAllIrPeaks \n\r");
+							//WriteUart2((unsigned int*) TxData);
+							/* DEBUG */
+							break;
+						case 12:
+							write_SPI(value1&0xFF);
+							/* DEBUG */
+							//sprintf(TxData,"WriteSPI %d \n\r",(value1 & 0xFF));
+							//WriteUart2((unsigned int*) TxData);
+							/* DEBUG */
+							break;
+						case 17:
+							SetCalcOnBoard(value1&0xFF);
+							/* DEBUG */
+							//sprintf(TxData,"SetCalcOnBoard %d \n\r",(value1 & 0xFF));
+							//WriteUart2((unsigned int*) TxData);
+							/* DEBUG */
+							break;
+						case 14:
+							auxValue = ((value1 << 8 )& 0xFF00) + (value2 & 0xFF);
+							WriteAllIrData( auxValue );
+							/* DEBUG */
+							//sprintf(TxData,"AllIrData %u \n\r",auxValue);
+							//WriteUart2((unsigned int*) TxData);
+							/* DEBUG */
+							break;
+						case 18:
+							SetUart1Communication(value1&0xFF);
+							break;
+						default:
+							if( (action& 0xFF) < 12)	
+							{
+								auxValue = ((value1 << 8 ) & 0xFF00 ) + (value2 & 0xFF);
+								StoreIrData( (action & 0xFF),auxValue);
+								/* DEBUG */
+								//sprintf(TxData,"StoreIrData %u %d \n\r ",auxValue, (action & 0xFF));
+								//WriteUart2((unsigned int*) TxData);
+								/* DEBUG */
+							}	
+							break;
+					}//end swicth
+				}//end stop	
+			}//	end action
+		}//end start
+	}//end Queue>5
 }
 
 void EmptyRxQueue ( void )

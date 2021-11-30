@@ -92,7 +92,7 @@ void init_ports( void ){
 	// Fosc= 4M*80/(4*2)=40Mhz for 4M input clock
 	//PLLFBD=80;					// M=80
 	PLLFBD=80;					// M=160
-	CLKDIVbits.PLLPOST=0b00;	// N1=4
+	CLKDIVbits.PLLPOST=0b00;	// N1=4 => Stefano Morgani: this is wrong, with PLLPOST=0 then this value is 2 and the resulting frequency is 80 MHz
 	CLKDIVbits.PLLPRE=0;		// N2=2
 
 	// Clock switching to incorporate PLL
