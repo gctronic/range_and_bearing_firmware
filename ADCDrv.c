@@ -27,20 +27,23 @@ void init_ADC( void ){
 	/*Sampling begins when SAMP bit is set*/
 	AD1CON1bits.ASAM   = 0;
 	/* 12-bit ADC operation */
-	AD1CON1bits.AD12B  = 1;		
+	AD1CON1bits.AD12B  = 1;	
 
 	/* Internal Voltage Reference*/
 	AD1CON2bits.VCFG = 0;
 	/* */
 	AD1CON2bits.CSCNA = 0;
 
-	/* Using standard clock*/
+	/* Using system clock*/
 	AD1CON3bits.ADRC = 0;
-	/* REVIEW --------!!!!!!!!!!
-	   ADC Conversion Clock Tad=Tcy*(ADCS+1)= (1/20M)*1 = 50ns (20Mhz)
-	   ADC Conversion Time for 12-bit Tc=14*Tab = 0.7us */
-	AD1CON3bits.ADCS = 10;
-	 
+    
+    //AD1CON3bits.SAMC = 1;
+    AD1CON3bits.ADCS = 10; //4 => to try (minimum sampling time)
+    // Minimum sampling clock Tad = 117.6 ns
+    // Tad = Tcy * (ADCS+1) = 25 ns * 5 = 125 ns
+    // Sampling time Tsmp = SAMC * Tad = 1 * Tad = 125 ns
+	// ADC Conversion Time for 12-bit Tconv = 14*Tad = 1.75us
+	
     IEC0bits.AD1IE = 0;			// Enable A/D interrupt 
     AD1CON1bits.ADON = 1;		// Turn on the A/D converter	
 	

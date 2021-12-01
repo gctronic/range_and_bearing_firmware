@@ -112,5 +112,6 @@
 #define RESET_PEAK11			LATAbits.LATA1
 #define RESET_PEAK12			LATAbits.LATA0
 
+#define RX_SENSOR_TYPE          PORTCbits.RC14
 
 void init_ports(void);

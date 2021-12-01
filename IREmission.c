@@ -70,10 +70,10 @@ void WriteIrData ( void ){
 	for(i=0; i < FRAME_DATA_LENGTH; i++){		
 		/* Transpose sensor data into emission frame */
 		for(j = 0; j < NUM_RECEPTOR_SENSORS; j++){			
-			aux = (DataStorage[j] >> i) & 0x01;
-			DataSend[i+HEADER_LENGTH] += (aux << SiftSensors[j]);
+			aux = (DataStorage[j] >> i) & 0x01; // Get current bit of data
+			DataSend[i+HEADER_LENGTH] += (aux << SiftSensors[j]); // Put the bit in each port
 			if(DataReadyToSend[j] == 1){
-				DataSendManch[i+HEADER_LENGTH] += (((~aux) & 0x01) << SiftSensors[j]);
+				DataSendManch[i+HEADER_LENGTH] += (((~aux) & 0x01) << SiftSensors[j]); // Manchester code for each port
 			}			
 			CRC[j]+=aux;
 		}

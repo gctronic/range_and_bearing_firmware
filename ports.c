@@ -2,6 +2,10 @@
 
 void init_ports( void ){
 
+    // Set pin 74 as input to differentiate the receiver sensor (455 KHz or 57.6 KHz)
+    TRISCbits.TRISC14 = INPUT_PIN;
+    CNPU1bits.CN0PUE = 1;
+    
 	/* IR EMISSION */
 	EM1_CONF = OUTPUT_PIN;
 	EM2_CONF = OUTPUT_PIN;
@@ -89,10 +93,9 @@ void init_ports( void ){
 	RCONbits.SWDTEN=0;            /* Disable Watch Dog Timer*/
 	// Configure Oscillator to operate the device at 40Mhz
 	// Fosc= Fin*M/(N1*N2), Fcy=Fosc/2
-	// Fosc= 4M*80/(4*2)=40Mhz for 4M input clock
-	//PLLFBD=80;					// M=80
-	PLLFBD=80;					// M=160
-	CLKDIVbits.PLLPOST=0b00;	// N1=4 => Stefano Morgani: this is wrong, with PLLPOST=0 then this value is 2 and the resulting frequency is 80 MHz
+	// Fosc= 4MHz*80/(2*2)=80Mhz for 4MHz input clock
+	PLLFBD=80;					// M=80
+	CLKDIVbits.PLLPOST=0b00;	// N1=2 => with PLLPOST=0 then this value is 2 and the resulting frequency is 80 MHz
 	CLKDIVbits.PLLPRE=0;		// N2=2
 
 	// Clock switching to incorporate PLL

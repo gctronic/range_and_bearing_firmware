@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project>
+  <executable name="dist/default/production/randb.X.production.cof">
+    <memory name="data">
+      <units>bytes</units>
+      <length>30720</length>
+      <used>5722</used>
+      <free>24998</free>
+    </memory>
+    <memory name="program">
+      <units>bytes</units>
+      <length>261888</length>
+      <used>14244</used>
+      <free>247644</free>
+    </memory>
+  </executable>
+</project>

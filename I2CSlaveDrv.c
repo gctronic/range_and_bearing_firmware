@@ -24,7 +24,7 @@
 dataRegisterReceived dataAll[12];
 unsigned int maxData;
 finalDataRegister finalData;
-
+uint8_t tx_power = 150; // Default
 unsigned char auxValue=0;
 
 //Functions prototype
@@ -255,7 +255,7 @@ void write_register(char reg_add, unsigned char value)
 	switch(reg_add){
 		/* Change Power Transmission */
 		case 12:
-			write_SPI( value );
+            tx_power = value;
 			break;
 		
 		/* Write All values and send values */

@@ -8,6 +8,8 @@
 #define STATE_CRC 2
 #define WAIT 100
 
+#define SENSOR_455_KHZ 0
+#define SENSOR_57_6_KHZ 1
 
 queueSingle queueReception;
 queueSingle queuePeakReception[NUM_RECEPTOR_SENSORS];
@@ -39,7 +41,10 @@ int NEXT[NUM_RECEPTOR_SENSORS];
 int received;
 unsigned int dataReceived;
 
-int SensorAngle[] = {15,50,75,105,133,159,-165,-135,-105,-77,-50,-15};double CosSensorAngle[] = {0.965926,0.642788,0.258819,-0.258819,-0.681998,-0.93358,-0.965926,-0.707107,-0.258819,0.224951,0.642788,0.965926};double SinSensorAngle[] = {0.258819,0.766044,0.965926,0.965926,0.731354,0.358368,-0.258819,-0.707107,-0.965926,-0.97437,-0.766044,-0.258819};double SensorAngleRads[] = {0.261799,0.872665,1.308997,1.832596,2.321288,2.775073,-2.879793,-2.356194,-1.832596,-1.343903,-0.872665,-0.261799};
+int SensorAngle[] = {15,50,75,105,133,159,-165,-135,-105,-77,-50,-15};
+double CosSensorAngle[] = {0.965926,0.642788,0.258819,-0.258819,-0.681998,-0.93358,-0.965926,-0.707107,-0.258819,0.224951,0.642788,0.965926};
+double SinSensorAngle[] = {0.258819,0.766044,0.965926,0.965926,0.731354,0.358368,-0.258819,-0.707107,-0.965926,-0.97437,-0.766044,-0.258819};
+double SensorAngleRads[] = {0.261799,0.872665,1.308997,1.832596,2.321288,2.775073,-2.879793,-2.356194,-1.832596,-1.343903,-0.872665,-0.261799};
 
 dataRegisterReceived dataCompleatedIteration[NUM_RECEPTOR_SENSORS];
 //dataRegisterReceived dataCompleatedIterationToSend[NUM_RECEPTOR_SENSORS];
@@ -49,6 +54,8 @@ unsigned int IrPeakReadings[NUM_RECEPTOR_SENSORS];
 unsigned int IrPeakReadingsInit[NUM_RECEPTOR_SENSORS];
 
 long int NumberFrames = 0;
+
+uint8_t rx_sensor = 0;
 
 void init_Reception ( void ){
 
@@ -78,8 +85,16 @@ void init_Reception ( void ){
 	 * Treceptiondata(20Khz) = 50us
 	 * PR3 = Treceptiondata / Tcy = 1000 */
 	TMR3=  0x0000;  	
-	//PR3 = 1000;           
-	PR3 = 4000;           
+    
+    // Read a pin to know if board is mounted with 455 KHz (old boards) or 57.6 KHz (new boards) receivers.
+    // The board is able to receive only at one specific frequency based on this pin.
+    if(RX_SENSOR_TYPE == 1) { // By default is 100 us (for 455 KHz)
+        PR3 = 4000;
+        rx_sensor = SENSOR_455_KHZ;
+    } else { // Else 140 us (for 57.6 KHz)
+        PR3 = 5733;
+        rx_sensor = SENSOR_57_6_KHZ;
+    }
 	/* Enable Timer3 and start the counter */
 	T3CONbits.TON = 1; 
 
@@ -119,8 +134,17 @@ void init_Reception ( void ){
 }
 
 void InitAllIrPeaks ( void ){
+    int i = 0;
+    unsigned int temp = 0;
 	ReadAllIrPeaks(IrPeakReadingsInit);
+	for(i = 0; i < 12; i++){
+        temp = IrPeakReadingsInit[i];
+        temp = temp>>2;
+        IrPeakReadingsInit[i] = IrPeakReadingsInit[i] - temp;   // Remove 25% to be still sensitive to communication signals even when there is big environmental noise.
+                                                                // This lets estimate the bearing at bigger distances, otherwise it will result to zero too fast.
+	}
 }
+
 /* FUNCTION FOR READING ALL THE PEAK DETECTOR VALUES */
 void ReadAllIrPeaks ( unsigned int * readings){
 	/* Take all the readings form the ADC channels */
@@ -361,9 +385,7 @@ void DisableIrPeak ( char channel){
 /* RECEIVING INTERRUPT */
 void __attribute__((__interrupt__, no_auto_psv)) _T3Interrupt(void)
 {
-	/* Reset Comparator */
-	TMR3=0;
-	 
+    
 	/* Get all the actual data values */
 	unsigned int dataInput = REPort & 0xFFF0;
 
@@ -397,68 +419,50 @@ void __attribute__((__interrupt__, no_auto_psv)) _T3Interrupt(void)
 	/* If not Working with CSMA */
 	#else
 		int i;
-		/* If no data is received */
-		if((dataInput) == 0xFFF0){
+		/* If no data is received or passive phase of Manchester encoding */
+		if((dataInput) == 0xFFF0){ // When no carrier is detected in no pins, then their state is 1.
 			/* If there is being less than 2 times without receiving a frame */
-			if(noSignal < 2){
-//				if ( preambleReceived == TRUE ){
-//					counterPreamble++;
-//					if ( counterPreamble == 1 ) {
-//						DisableAllIrPeaks();
-//					}
-//					if ( counterPreamble == 2) {
-//						EnableAllIrPeaks();
-//					}
-//				}
-				/* Store it */
+			if(noSignal < 2){ // Within Manchester code
+				/* Store it (passive phase of Manchester code*/
 				QueueInSingle(&queueReception,dataInput);
 				noSignal++;
-
 			}
 			else{
 				if ( preambleReceived == TRUE ){
+                    // Store distance reading
+                    //LED0 = HIGH; // For debugging...
 					unsigned int readingsPeak[NUM_RECEPTOR_SENSORS];
 					//ReadAllIrPeaks(readingsPeak);
-					for ( i = 0 ; i < NUM_RECEPTOR_SENSORS; i++)
+					for ( i = 0 ; i < NUM_RECEPTOR_SENSORS; i++) // This loop takes about 2.5 ms!
 					{
 						ReadIrPeak(&readingsPeak[i],i);
 						QueueInSingle(&queuePeakReception[i],readingsPeak[i]);
 					}
+                    //LED0 = LOW;
 					preambleReceived = FALSE;
 				}
 			}
 			counterPreambleStart = 0;
-		}
+		} // When a carrier is detected, then the "DATA_INPUT" pins are 0.
 		/* If something received */
 		else{	
 			if ( preambleReceived == FALSE )
 			{
 				counterPreambleStart++;
-				//if ( counterPreambleStart == 3){ 	// Stefano Morgani: originally the "reset peak time" was 200 us ((HEADER_LENGTH2 -1) - 3 = 2 x T3 periods = 200 us)
-				//	DisableAllIrPeaks();			// When the "reset peaks" are hold in reset the consumption is high, so we reduced the "reset" time to a minimum of about 1.5 us.
+				//if ( counterPreambleStart == 3){ 	// Originally the "reset peak time" was 200 us ((HEADER_LENGTH2 -1) - 3 = 2 x T3 periods = 200 us)
+				//	DisableAllIrPeaks();			// When the "reset peaks" are hold in reset, then the consumption is high, so we reduced the "reset" time to a minimum of about 1.5 us.
  				//}									// This is enough to actually reset the charge and the consumption is reduced as much as possible.
-				if ( counterPreambleStart == (HEADER_LENGTH2 -1) ) 
+				if ( counterPreambleStart == (HEADER_LENGTH2) ) //-1??
 				{
-					DisableAllIrPeaks();						// Stefano Morgani: "reset peaks" time is about 1.5 us.
+					DisableAllIrPeaks();						// "reset peaks" time is about 1.5 us.
 					for (i = 0; i < 3; i++){__asm__("nop");}	// The drawback is that we are waiting inside an interrupt.
 					EnableAllIrPeaks();
 					preambleReceived = TRUE;
-//					counterPreamble = 0;
 				}
 			}
-//			else 
-//			{
-//				counterPreamble++;
-//				if ( counterPreamble == 1) {
-//					DisableAllIrPeaks();
-//				}
-//				if ( counterPreamble == 2) {
-//					EnableAllIrPeaks();
-//				}
-//			}
 			/* Reset the noSignal tag */
 			noSignal=0;
-			/* Store the data */
+			/* Store the data (active phase of Manchester code) */
 			QueueInSingle(&queueReception,dataInput);
 //			oldDataInput = dataInput;
 		}
@@ -507,10 +511,10 @@ void DecodeData ( void ) {
 				{
 					if ( dataCompleatedIteration[i].enable == TRUE) 
 					{
-						dataInput = ( readFrame >> ( i + 4) ) & 0x1;
+						dataInput = ( readFrame >> ( i + 4) ) & 0x1; // The DATA_INPUT pins start from 4th bit => extract the value of each port
 						/* If the data received is the expected. */
 						/* Header frame is not in Manchester Code */				
-						if(dataInput==NEXT[i])
+						if(dataInput==NEXT[i]) // The header/preamble is 6 bits at 0 (carrier ON for all 6 bits).
 						{
 							/* Increase heading counts */
 							countBits[i]++;
@@ -520,6 +524,10 @@ void DecodeData ( void ) {
 						{
 							dataCompleatedIteration[i].enable = FALSE;
 							counterDisable++;
+                            //if(i==2) {
+                            //    sprintf(SerialTX,"P%d", countBits[i]);
+                            //    WriteUart2((unsigned int*) SerialTX);
+                            //}
 							countBits[i] = 0;							
 							//QueueOutSingle(&queuePeakReception[i],&PeakReading);
 						}
@@ -549,7 +557,7 @@ void DecodeData ( void ) {
 				{
 					if ( dataCompleatedIteration[i].enable == TRUE) 
 					{
-						dataInput = ( readFrame >> ( i + 4) ) & 0x1;
+						dataInput = ( readFrame >> ( i + 4) ) & 0x1; // The DATA_INPUT pins start from 4th bit => extract the value of each port
 						/* If first half bit of a Manchester code*/
 						if(countBits[i] == 0)
 						{
@@ -581,6 +589,10 @@ void DecodeData ( void ) {
 								counterDisable++;
 								//while(QueueEmptySingle(&queuePeakReception[i]));
 								//QueueOutSingle(&queuePeakReception[i],&PeakReading);
+                                //if(i==2) {
+                                //    sprintf(SerialTX,"D%d", countFrame[i]);
+                                //    WriteUart2((unsigned int*) SerialTX);
+                                //}
 							}
 						}	
 						/* If all the data have been received */
@@ -604,7 +616,7 @@ void DecodeData ( void ) {
 				{
 					if ( dataCompleatedIteration[i].enable == TRUE) 
 					{
-						dataInput = ( readFrame >> ( i + 4) ) & 0x1;
+						dataInput = ( readFrame >> ( i + 4) ) & 0x1; // The DATA_INPUT pins start from 4th bit => extract the value of each port
 						/* If is the first half bit of a Manchester code */
 						if(countBits[i]==0)
 						{
@@ -634,6 +646,10 @@ void DecodeData ( void ) {
 								counterDisable++;
 								//while(QueueEmptySingle(&queuePeakReception[i]));
 								//QueueOutSingle(&queuePeakReception[i],&PeakReading);
+                                //if(i==2) {
+                                //    sprintf(SerialTX,"C%d", countFrame[i]);
+                                //    WriteUart2((unsigned int*) SerialTX);
+                                //}
 							}	
 						}
 						/* If all the data have been received */
@@ -705,15 +721,17 @@ void DecodeData ( void ) {
 				double y=0;
 				unsigned int max_peak1 = 0;
 				unsigned int max_peak2 = 0;
-				char max_sensor1 = 0;
+				char max_sensor1 = 12; // Init with 12 to distinguish when no max sensor is found.
 				char max_sensor2 = 0;
 				int num_sensors;
+                char last_sensor_with_data = 12;
+                
 				for( num_sensors = 0 ; num_sensors < NUM_RECEPTOR_SENSORS ; num_sensors++ )
 				{
 					//int distance = dataCompleatedIteration[num_sensors].distance;
 					unsigned int distance = 0;
-					while(QueueEmptySingle(&queuePeakReception[num_sensors]));
-					QueueOutSingle(&queuePeakReception[num_sensors],&distance);
+					while(QueueEmptySingle(&queuePeakReception[num_sensors])); // Wait untill the queue is filled
+					QueueOutSingle(&queuePeakReception[num_sensors],&distance);                   
 					/*************** DEBUG RS232 - PC *****************/
 					//sprintf(SerialTX,"%u %u ",distance,dataCompleatedIteration[num_sensors].received);
 					//sprintf(SerialTX,"%u ",distance);
@@ -725,6 +743,8 @@ void DecodeData ( void ) {
 						x+= distance * CosSensorAngle[num_sensors];
 						y+= distance * SinSensorAngle[num_sensors];
 			
+                        // max_peak1 is the maximum peak
+                        // max_peak2 is the 2nd maximum peak
 						if ( distance > max_peak1 ) 
 						{
 							max_peak2 = max_peak1;
@@ -737,13 +757,18 @@ void DecodeData ( void ) {
 							max_peak2 = distance;
 							max_sensor2 = num_sensors;
 						}	
+                        last_sensor_with_data = max_sensor1;
 						/*************** DEBUG RS232 - PC *****************/
 						//sprintf(SerialTX,"'%u' ",max_peak1);
 						//WriteUart2((unsigned int*) SerialTX); 
 						/*************** END DEBUG *****************/
-					}
+					} else if(dataCompleatedIteration[num_sensors].received == 1) {                    
+                        // It can happen that the measured distance (adc reading) is zero, even if one or more sensors received the data.
+                        // So instead of simply gives zero to the user also for the "max sensor" (receiving sensor) data, return the index of the sensor
+                        // that possibly receive the data when measured distance is null.
+                        last_sensor_with_data = num_sensors;
+                    }
 				}
-
 			
 				/* Calc Angle*/ 
 				double angle;
@@ -773,9 +798,13 @@ void DecodeData ( void ) {
 				//finalDataReceived.data = dataCompleatedIteration[max_sensor1].data;
 				finalDataReceived.data = dataReceived;
 				finalDataReceived.bearing = (int) (angle * 10000);
-				finalDataReceived.range = distance;
+                finalDataReceived.range = distance;
+                if(rx_sensor == SENSOR_57_6_KHZ) {
+                    finalDataReceived.range = finalDataReceived.range>>1;   // Since the data transmitted at 57.6 KHz uses higher power, then we need to adapt the computed distance (about half) in order
+                                                                            // to be compatible with the 455 KHz receiver.
+                }
 				finalDataReceived.max_peak1 = max_peak1;
-				finalDataReceived.max_sensor1 = max_sensor1;
+				finalDataReceived.max_sensor1 = last_sensor_with_data; //max_sensor1;
 				finalDataReceived.angle = angle;
 				/*************** DEBUG RS232 - PC *****************/
 				//sprintf(SerialTX,"%u %2f %u \n\r ",finalDataReceived.data, (angle * 180 / 3.1415), finalDataReceived.range);
