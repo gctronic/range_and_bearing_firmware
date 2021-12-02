@@ -56,6 +56,7 @@ unsigned int IrPeakReadingsInit[NUM_RECEPTOR_SENSORS];
 long int NumberFrames = 0;
 
 uint8_t rx_sensor = 0;
+uint8_t reset_peaks = 0;
 
 void init_Reception ( void ){
 
@@ -385,7 +386,7 @@ void DisableIrPeak ( char channel){
 /* RECEIVING INTERRUPT */
 void __attribute__((__interrupt__, no_auto_psv)) _T3Interrupt(void)
 {
-    
+    //LED0 = rx_sensor;
 	/* Get all the actual data values */
 	unsigned int dataInput = REPort & 0xFFF0;
 
@@ -423,11 +424,19 @@ void __attribute__((__interrupt__, no_auto_psv)) _T3Interrupt(void)
 		if((dataInput) == 0xFFF0){ // When no carrier is detected in no pins, then their state is 1.
 			/* If there is being less than 2 times without receiving a frame */
 			if(noSignal < 2){ // Within Manchester code
+                if(reset_peaks == 1) {
+                    reset_peaks = 0;
+                    //LED0 = HIGH; // For debugging...
+					DisableAllIrPeaks();						// "reset peaks" time is about 3.5 us.
+					for (i = 0; i < 20; i++){__asm__("nop");}	// The drawback is that we are waiting inside an interrupt.
+					EnableAllIrPeaks();
+                    //LED0 = LOW;                   
+                }
 				/* Store it (passive phase of Manchester code*/
 				QueueInSingle(&queueReception,dataInput);
-				noSignal++;
+				noSignal++;                
 			}
-			else{
+			else{ // When no signal received for >=2 cycles, it means the frame is ended, so we can measure the ADC channels.
 				if ( preambleReceived == TRUE ){
                     // Store distance reading
                     //LED0 = HIGH; // For debugging...
@@ -454,10 +463,11 @@ void __attribute__((__interrupt__, no_auto_psv)) _T3Interrupt(void)
  				//}									// This is enough to actually reset the charge and the consumption is reduced as much as possible.
 				if ( counterPreambleStart == (HEADER_LENGTH2) ) //-1??
 				{
-					DisableAllIrPeaks();						// "reset peaks" time is about 1.5 us.
-					for (i = 0; i < 3; i++){__asm__("nop");}	// The drawback is that we are waiting inside an interrupt.
-					EnableAllIrPeaks();
+					//DisableAllIrPeaks();						// "reset peaks" time is about 1.5 us.
+					//for (i = 0; i < 3; i++){__asm__("nop");}	// The drawback is that we are waiting inside an interrupt.
+					//EnableAllIrPeaks();
 					preambleReceived = TRUE;
+                    reset_peaks = 1;
 				}
 			}
 			/* Reset the noSignal tag */
@@ -798,9 +808,10 @@ void DecodeData ( void ) {
 				//finalDataReceived.data = dataCompleatedIteration[max_sensor1].data;
 				finalDataReceived.data = dataReceived;
 				finalDataReceived.bearing = (int) (angle * 10000);
-                finalDataReceived.range = distance;
-                if(rx_sensor == SENSOR_57_6_KHZ) {
-                    finalDataReceived.range = finalDataReceived.range>>1;   // Since the data transmitted at 57.6 KHz uses higher power, then we need to adapt the computed distance (about half) in order
+                if(rx_sensor == SENSOR_455_KHZ) {
+                    finalDataReceived.range = distance;
+                } else {
+                    finalDataReceived.range = ((unsigned int)distance)>>2;   // Since the data transmitted at 57.6 KHz uses higher power, then we need to adapt the computed distance (about 1/4) in order
                                                                             // to be compatible with the 455 KHz receiver.
                 }
 				finalDataReceived.max_peak1 = max_peak1;

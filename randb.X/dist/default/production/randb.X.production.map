@@ -154,13 +154,13 @@ Default Scalar Model: Small
 
 section                    address   length (PC units)   length (bytes) (dec)
 -------                    -------   -----------------   --------------------
-.text                        0x200              0x1254          0x1b7e  (7038)
-.const                      0x1454                0x54            0x7e  (126)
-.text                       0x14a8               0xdde          0x14cd  (5325)
-.dinit                      0x2286               0x156           0x201  (513)
-.text                       0x23dc               0x33c           0x4da  (1242)
+.text                        0x200              0x1262          0x1b93  (7059)
+.const                      0x1462                0x54            0x7e  (126)
+.text                       0x14b6               0xde0          0x14d0  (5328)
+.dinit                      0x2296               0x156           0x201  (513)
+.text                       0x23ec               0x33c           0x4da  (1242)
 
-                 Total "program" memory used (bytes):         0x37a4  (14244) 5%
+                 Total "program" memory used (bytes):         0x37bc  (14268) 5%
 
 
 "data" Memory  [Origin = 0x800, Length = 0x7800]
@@ -198,6 +198,7 @@ External Symbols in Data Memory (by address):
 
                     0x0800                  _NumberFrames
                     0x0804                  _rx_sensor
+                    0x0805                  _reset_peaks
                     0x0806                  _calcOnBoard
                     0x0808                  _dataInput
                     0x080a                  _readFrame
@@ -342,6 +343,7 @@ External Symbols in Data Memory (by name):
                     0x081a                  _received
                     0x14ca                  _receivedData
                     0x0842                  _register_add
+                    0x0805                  _reset_peaks
                     0x0804                  _rx_sensor
                     0x1ab2                  _sendData
                     0x080c                  _state
@@ -358,259 +360,259 @@ External Symbols in Program Memory (by address):
                   0x000246                  __data_init_standard
                   0x0002bc                  __SI2C1Interrupt
                   0x000332                  __T3Interrupt
-                  0x0003be                  __T1Interrupt
-                  0x00049a                  __U2TXInterrupt
-                  0x00049e                  __U2RXInterrupt
-                  0x0005d8                  __U1TXInterrupt
-                  0x0005f4                  __U1RXInterrupt
-                  0x000614                  __DefaultInterrupt
-                  0x0006a0                  ___floatunsisf
-                  0x0006a4                  ___mulsf3
-                  0x00070c                  ___subsf3
-                  0x00070e                  ___addsf3
-                  0x0007c8                  ___nesf2
-                  0x0007cc                  _atan2f
-                  0x000806                  _cosf
-                  0x00080a                  ___divsf3
-                  0x00088e                  _sqrtf
-                  0x0008f8                  ___fixsfsi
-                  0x00093a                  ___fixunssfsi
-                  0x000970                  ___floatundisf
-                  0x0009ce                  __funpack2
-                  0x0009de                  __fPropagateNaN
-                  0x0009f0                  __fbopExit
-                  0x0009f8                  __fbopReturnNaN
-                  0x0009fe                  __fpack
-                  0x000a4a                  __fcompare
-                  0x000a80                  _atanf
-                  0x000b4a                  __sincosf
-                  0x000c1c                  __funpack
-                  0x000c46                  ___ltsf2
-                  0x000c46                  ___eqsf2
-                  0x000c46                  ___lesf2
-                  0x000c4a                  _fmodf
-                  0x000c4e                  ___floatsisf
-                  0x000c54                  __fmodrem
-                  0x000cf2                  ___floatdisf
-                  0x000d12                  ___mulp32eds3
-                  0x000d12                  ___mulp32peds3
-                  0x000d12                  ___mulsi3
-                  0x000d1e                  ___udivsi3
-                  0x000d3e                  _CloseUART2
-                  0x000d4a                  _putsUART2
-                  0x000d72                  _BusyUART2
-                  0x000d7c                  _CloseUART1
-                  0x000d88                  _WriteUART1
-                  0x000d96                  __sprintf_cdnopuxX
-                  0x000dc2                  _srand
-                  0x000dd0                  _rand
-                  0x000e08                  __vfprintf_cdnopuxX
-                  0x0014a8                  _ReadAllIrPeaks
-                  0x0014c4                  _InitAllIrPeaks
-                  0x0014d8                  _ReadIrPeak
-                  0x0014f8                  _DisableAllIrPeaks
-                  0x001512                  _ResetIrPeak
-                  0x0015de                  _init_Reception
-                  0x0016ae                  _EnableAllIrPeaks
-                  0x0016c8                  _EnableIrPeak
-                  0x00171c                  _DisableIrPeak
-                  0x001770                  _GetReceptionFrame
-                  0x001778                  _SetReceptionFrame
-                  0x001780                  _DecodeData
-                  0x001b4a                  _GetReceptionData
-                  0x001b52                  _SetReceptionData
-                  0x001b6c                  _GetCalcOnBoard
-                  0x001b70                  _SetCalcOnBoard
-                  0x001b76                  _init_queue
-                  0x001b8c                  _QueueIn
-                  0x001bca                  _QueueOut
-                  0x001c0a                  _QueueEmpty
-                  0x001c1a                  _init_queue_single
-                  0x001c26                  _QueueInSingle
-                  0x001c50                  _QueueOutSingle
-                  0x001c78                  _QueueEmptySingle
-                  0x001c86                  _QueueStatusSingle
-                  0x001c8a                  _QueueClearSingle
-                  0x001c96                  _init_queue_final
-                  0x001ca2                  _QueueInFinal
-                  0x001ce4                  _QueueOutFinal
-                  0x001d12                  _QueueEmptyFinal
-                  0x001d20                  _init_queueMultiple
-                  0x001d2a                  _QueueInMultiple
-                  0x001d4a                  _QueueOutMultiple
-                  0x001d72                  _QueueEmptyMultiple
-                  0x001d80                  _StoreIrData
-                  0x001d8e                  _WriteIrData
-                  0x001f22                  _WriteAllIrData
-                  0x001f36                  _init_I2C
-                  0x001f4e                  _read_register
-                  0x002088                  _write_register
-                  0x0020ea                  _init_UART2
-                  0x002124                  _close_UART2
-                  0x002128                  _WriteUart2
-                  0x002132                  _init_UART1
-                  0x002182                  _close_UART1
-                  0x002186                  _WriteUart1
-                  0x0021a4                  _EmptyRxQueue
-                  0x0021aa                  _SetUart1Communication
-                  0x0021ae                  _ManageUart1Reception
-                  0x002282                  _GetUart1Communication
-                  0x0023dc                  _init_registers
-                  0x002406                  _setDataReceived
-                  0x002428                  _setAllDataReceived
-                  0x002452                  _setModelledDataReceived
-                  0x002466                  _getDataReceived
-                  0x002478                  _getAllDataReceived
-                  0x0024ae                  _getModelledDataReceived
-                  0x0024ba                  _resetDataReceived
-                  0x0024c0                  _resetAllDataReceived
-                  0x0024c4                  _resetModelledDataReceived
-                  0x0024ca                  _setMediumStatus
-                  0x0024ce                  _getMediumStatus
-                  0x0024d2                  _init_ports
-                  0x002592                  _initRandomNumberGenerator
-                  0x0025f4                  _main
-                  0x002620                  _init_PWM
-                  0x00265a                  _init_T1
-                  0x00267a                  _init_Emmision
-                  0x002680                  _GetEmissionFrame
-                  0x002688                  _SetEmissionFrame
-                  0x002690                  _init_ADC
-                  0x0026ba                  _close_ADC
-                  0x0026bc                  _ReadADC
-                  0x0026dc                  _write_SPI
-                  0x0026ea                  _init_SPI
+                  0x0003cc                  __T1Interrupt
+                  0x0004a8                  __U2TXInterrupt
+                  0x0004ac                  __U2RXInterrupt
+                  0x0005e6                  __U1TXInterrupt
+                  0x000602                  __U1RXInterrupt
+                  0x000622                  __DefaultInterrupt
+                  0x0006ae                  ___floatunsisf
+                  0x0006b2                  ___mulsf3
+                  0x00071a                  ___subsf3
+                  0x00071c                  ___addsf3
+                  0x0007d6                  ___nesf2
+                  0x0007da                  _atan2f
+                  0x000814                  _cosf
+                  0x000818                  ___divsf3
+                  0x00089c                  _sqrtf
+                  0x000906                  ___fixsfsi
+                  0x000948                  ___fixunssfsi
+                  0x00097e                  ___floatundisf
+                  0x0009dc                  __funpack2
+                  0x0009ec                  __fPropagateNaN
+                  0x0009fe                  __fbopExit
+                  0x000a06                  __fbopReturnNaN
+                  0x000a0c                  __fpack
+                  0x000a58                  __fcompare
+                  0x000a8e                  _atanf
+                  0x000b58                  __sincosf
+                  0x000c2a                  __funpack
+                  0x000c54                  ___ltsf2
+                  0x000c54                  ___eqsf2
+                  0x000c54                  ___lesf2
+                  0x000c58                  _fmodf
+                  0x000c5c                  ___floatsisf
+                  0x000c62                  __fmodrem
+                  0x000d00                  ___floatdisf
+                  0x000d20                  ___mulp32eds3
+                  0x000d20                  ___mulp32peds3
+                  0x000d20                  ___mulsi3
+                  0x000d2c                  ___udivsi3
+                  0x000d4c                  _CloseUART2
+                  0x000d58                  _putsUART2
+                  0x000d80                  _BusyUART2
+                  0x000d8a                  _CloseUART1
+                  0x000d96                  _WriteUART1
+                  0x000da4                  __sprintf_cdnopuxX
+                  0x000dd0                  _srand
+                  0x000dde                  _rand
+                  0x000e16                  __vfprintf_cdnopuxX
+                  0x0014b6                  _ReadAllIrPeaks
+                  0x0014d2                  _InitAllIrPeaks
+                  0x0014e6                  _ReadIrPeak
+                  0x001506                  _DisableAllIrPeaks
+                  0x001520                  _ResetIrPeak
+                  0x0015ec                  _init_Reception
+                  0x0016bc                  _EnableAllIrPeaks
+                  0x0016d6                  _EnableIrPeak
+                  0x00172a                  _DisableIrPeak
+                  0x00177e                  _GetReceptionFrame
+                  0x001786                  _SetReceptionFrame
+                  0x00178e                  _DecodeData
+                  0x001b5a                  _GetReceptionData
+                  0x001b62                  _SetReceptionData
+                  0x001b7c                  _GetCalcOnBoard
+                  0x001b80                  _SetCalcOnBoard
+                  0x001b86                  _init_queue
+                  0x001b9c                  _QueueIn
+                  0x001bda                  _QueueOut
+                  0x001c1a                  _QueueEmpty
+                  0x001c2a                  _init_queue_single
+                  0x001c36                  _QueueInSingle
+                  0x001c60                  _QueueOutSingle
+                  0x001c88                  _QueueEmptySingle
+                  0x001c96                  _QueueStatusSingle
+                  0x001c9a                  _QueueClearSingle
+                  0x001ca6                  _init_queue_final
+                  0x001cb2                  _QueueInFinal
+                  0x001cf4                  _QueueOutFinal
+                  0x001d22                  _QueueEmptyFinal
+                  0x001d30                  _init_queueMultiple
+                  0x001d3a                  _QueueInMultiple
+                  0x001d5a                  _QueueOutMultiple
+                  0x001d82                  _QueueEmptyMultiple
+                  0x001d90                  _StoreIrData
+                  0x001d9e                  _WriteIrData
+                  0x001f32                  _WriteAllIrData
+                  0x001f46                  _init_I2C
+                  0x001f5e                  _read_register
+                  0x002098                  _write_register
+                  0x0020fa                  _init_UART2
+                  0x002134                  _close_UART2
+                  0x002138                  _WriteUart2
+                  0x002142                  _init_UART1
+                  0x002192                  _close_UART1
+                  0x002196                  _WriteUart1
+                  0x0021b4                  _EmptyRxQueue
+                  0x0021ba                  _SetUart1Communication
+                  0x0021be                  _ManageUart1Reception
+                  0x002292                  _GetUart1Communication
+                  0x0023ec                  _init_registers
+                  0x002416                  _setDataReceived
+                  0x002438                  _setAllDataReceived
+                  0x002462                  _setModelledDataReceived
+                  0x002476                  _getDataReceived
+                  0x002488                  _getAllDataReceived
+                  0x0024be                  _getModelledDataReceived
+                  0x0024ca                  _resetDataReceived
+                  0x0024d0                  _resetAllDataReceived
+                  0x0024d4                  _resetModelledDataReceived
+                  0x0024da                  _setMediumStatus
+                  0x0024de                  _getMediumStatus
+                  0x0024e2                  _init_ports
+                  0x0025a2                  _initRandomNumberGenerator
+                  0x002604                  _main
+                  0x002630                  _init_PWM
+                  0x00266a                  _init_T1
+                  0x00268a                  _init_Emmision
+                  0x002690                  _GetEmissionFrame
+                  0x002698                  _SetEmissionFrame
+                  0x0026a0                  _init_ADC
+                  0x0026ca                  _close_ADC
+                  0x0026cc                  _ReadADC
+                  0x0026ec                  _write_SPI
+                  0x0026fa                  _init_SPI
 
 External Symbols in Program Memory (by name):
 
-                  0x000d72                  _BusyUART2
-                  0x000d7c                  _CloseUART1
-                  0x000d3e                  _CloseUART2
-                  0x001780                  _DecodeData
-                  0x0014f8                  _DisableAllIrPeaks
-                  0x00171c                  _DisableIrPeak
-                  0x0021a4                  _EmptyRxQueue
-                  0x0016ae                  _EnableAllIrPeaks
-                  0x0016c8                  _EnableIrPeak
-                  0x001b6c                  _GetCalcOnBoard
-                  0x002680                  _GetEmissionFrame
-                  0x001b4a                  _GetReceptionData
-                  0x001770                  _GetReceptionFrame
-                  0x002282                  _GetUart1Communication
-                  0x0014c4                  _InitAllIrPeaks
-                  0x0021ae                  _ManageUart1Reception
-                  0x001c8a                  _QueueClearSingle
-                  0x001c0a                  _QueueEmpty
-                  0x001d12                  _QueueEmptyFinal
-                  0x001d72                  _QueueEmptyMultiple
-                  0x001c78                  _QueueEmptySingle
-                  0x001b8c                  _QueueIn
-                  0x001ca2                  _QueueInFinal
-                  0x001d2a                  _QueueInMultiple
-                  0x001c26                  _QueueInSingle
-                  0x001bca                  _QueueOut
-                  0x001ce4                  _QueueOutFinal
-                  0x001d4a                  _QueueOutMultiple
-                  0x001c50                  _QueueOutSingle
-                  0x001c86                  _QueueStatusSingle
-                  0x0026bc                  _ReadADC
-                  0x0014a8                  _ReadAllIrPeaks
-                  0x0014d8                  _ReadIrPeak
-                  0x001512                  _ResetIrPeak
-                  0x001b70                  _SetCalcOnBoard
-                  0x002688                  _SetEmissionFrame
-                  0x001b52                  _SetReceptionData
-                  0x001778                  _SetReceptionFrame
-                  0x0021aa                  _SetUart1Communication
-                  0x001d80                  _StoreIrData
-                  0x001f22                  _WriteAllIrData
-                  0x001d8e                  _WriteIrData
-                  0x000d88                  _WriteUART1
-                  0x002186                  _WriteUart1
-                  0x002128                  _WriteUart2
-                  0x000614                  __DefaultInterrupt
+                  0x000d80                  _BusyUART2
+                  0x000d8a                  _CloseUART1
+                  0x000d4c                  _CloseUART2
+                  0x00178e                  _DecodeData
+                  0x001506                  _DisableAllIrPeaks
+                  0x00172a                  _DisableIrPeak
+                  0x0021b4                  _EmptyRxQueue
+                  0x0016bc                  _EnableAllIrPeaks
+                  0x0016d6                  _EnableIrPeak
+                  0x001b7c                  _GetCalcOnBoard
+                  0x002690                  _GetEmissionFrame
+                  0x001b5a                  _GetReceptionData
+                  0x00177e                  _GetReceptionFrame
+                  0x002292                  _GetUart1Communication
+                  0x0014d2                  _InitAllIrPeaks
+                  0x0021be                  _ManageUart1Reception
+                  0x001c9a                  _QueueClearSingle
+                  0x001c1a                  _QueueEmpty
+                  0x001d22                  _QueueEmptyFinal
+                  0x001d82                  _QueueEmptyMultiple
+                  0x001c88                  _QueueEmptySingle
+                  0x001b9c                  _QueueIn
+                  0x001cb2                  _QueueInFinal
+                  0x001d3a                  _QueueInMultiple
+                  0x001c36                  _QueueInSingle
+                  0x001bda                  _QueueOut
+                  0x001cf4                  _QueueOutFinal
+                  0x001d5a                  _QueueOutMultiple
+                  0x001c60                  _QueueOutSingle
+                  0x001c96                  _QueueStatusSingle
+                  0x0026cc                  _ReadADC
+                  0x0014b6                  _ReadAllIrPeaks
+                  0x0014e6                  _ReadIrPeak
+                  0x001520                  _ResetIrPeak
+                  0x001b80                  _SetCalcOnBoard
+                  0x002698                  _SetEmissionFrame
+                  0x001b62                  _SetReceptionData
+                  0x001786                  _SetReceptionFrame
+                  0x0021ba                  _SetUart1Communication
+                  0x001d90                  _StoreIrData
+                  0x001f32                  _WriteAllIrData
+                  0x001d9e                  _WriteIrData
+                  0x000d96                  _WriteUART1
+                  0x002196                  _WriteUart1
+                  0x002138                  _WriteUart2
+                  0x000622                  __DefaultInterrupt
                   0x0002bc                  __SI2C1Interrupt
-                  0x0003be                  __T1Interrupt
+                  0x0003cc                  __T1Interrupt
                   0x000332                  __T3Interrupt
-                  0x0005f4                  __U1RXInterrupt
-                  0x0005d8                  __U1TXInterrupt
-                  0x00049e                  __U2RXInterrupt
-                  0x00049a                  __U2TXInterrupt
-                  0x00070e                  ___addsf3
-                  0x00080a                  ___divsf3
-                  0x000c46                  ___eqsf2
-                  0x0008f8                  ___fixsfsi
-                  0x00093a                  ___fixunssfsi
-                  0x000cf2                  ___floatdisf
-                  0x000c4e                  ___floatsisf
-                  0x000970                  ___floatundisf
-                  0x0006a0                  ___floatunsisf
-                  0x000c46                  ___lesf2
-                  0x000c46                  ___ltsf2
-                  0x000d12                  ___mulp32eds3
-                  0x000d12                  ___mulp32peds3
-                  0x0006a4                  ___mulsf3
-                  0x000d12                  ___mulsi3
-                  0x0007c8                  ___nesf2
-                  0x00070c                  ___subsf3
-                  0x000d1e                  ___udivsi3
+                  0x000602                  __U1RXInterrupt
+                  0x0005e6                  __U1TXInterrupt
+                  0x0004ac                  __U2RXInterrupt
+                  0x0004a8                  __U2TXInterrupt
+                  0x00071c                  ___addsf3
+                  0x000818                  ___divsf3
+                  0x000c54                  ___eqsf2
+                  0x000906                  ___fixsfsi
+                  0x000948                  ___fixunssfsi
+                  0x000d00                  ___floatdisf
+                  0x000c5c                  ___floatsisf
+                  0x00097e                  ___floatundisf
+                  0x0006ae                  ___floatunsisf
+                  0x000c54                  ___lesf2
+                  0x000c54                  ___ltsf2
+                  0x000d20                  ___mulp32eds3
+                  0x000d20                  ___mulp32peds3
+                  0x0006b2                  ___mulsf3
+                  0x000d20                  ___mulsi3
+                  0x0007d6                  ___nesf2
+                  0x00071a                  ___subsf3
+                  0x000d2c                  ___udivsi3
                   0x000246                  __data_init
                   0x000246                  __data_init_standard
-                  0x0009de                  __fPropagateNaN
-                  0x0009f0                  __fbopExit
-                  0x0009f8                  __fbopReturnNaN
-                  0x000a4a                  __fcompare
-                  0x000c54                  __fmodrem
-                  0x0009fe                  __fpack
-                  0x000c1c                  __funpack
-                  0x0009ce                  __funpack2
+                  0x0009ec                  __fPropagateNaN
+                  0x0009fe                  __fbopExit
+                  0x000a06                  __fbopReturnNaN
+                  0x000a58                  __fcompare
+                  0x000c62                  __fmodrem
+                  0x000a0c                  __fpack
+                  0x000c2a                  __funpack
+                  0x0009dc                  __funpack2
                   0x000230                  __psv_init
                   0x000200                  __resetPRI
-                  0x000b4a                  __sincosf
-                  0x000d96                  __sprintf_cdnopuxX
-                  0x000e08                  __vfprintf_cdnopuxX
-                  0x0007cc                  _atan2f
-                  0x000a80                  _atanf
-                  0x0026ba                  _close_ADC
-                  0x002182                  _close_UART1
-                  0x002124                  _close_UART2
-                  0x000806                  _cosf
-                  0x000c4a                  _fmodf
-                  0x002478                  _getAllDataReceived
-                  0x002466                  _getDataReceived
-                  0x0024ce                  _getMediumStatus
-                  0x0024ae                  _getModelledDataReceived
-                  0x002592                  _initRandomNumberGenerator
-                  0x002690                  _init_ADC
-                  0x00267a                  _init_Emmision
-                  0x001f36                  _init_I2C
-                  0x002620                  _init_PWM
-                  0x0015de                  _init_Reception
-                  0x0026ea                  _init_SPI
-                  0x00265a                  _init_T1
-                  0x002132                  _init_UART1
-                  0x0020ea                  _init_UART2
-                  0x0024d2                  _init_ports
-                  0x001b76                  _init_queue
-                  0x001d20                  _init_queueMultiple
-                  0x001c96                  _init_queue_final
-                  0x001c1a                  _init_queue_single
-                  0x0023dc                  _init_registers
-                  0x0025f4                  _main
-                  0x000d4a                  _putsUART2
-                  0x000dd0                  _rand
-                  0x001f4e                  _read_register
-                  0x0024c0                  _resetAllDataReceived
-                  0x0024ba                  _resetDataReceived
-                  0x0024c4                  _resetModelledDataReceived
-                  0x002428                  _setAllDataReceived
-                  0x002406                  _setDataReceived
-                  0x0024ca                  _setMediumStatus
-                  0x002452                  _setModelledDataReceived
-                  0x00088e                  _sqrtf
-                  0x000dc2                  _srand
-                  0x0026dc                  _write_SPI
-                  0x002088                  _write_register
+                  0x000b58                  __sincosf
+                  0x000da4                  __sprintf_cdnopuxX
+                  0x000e16                  __vfprintf_cdnopuxX
+                  0x0007da                  _atan2f
+                  0x000a8e                  _atanf
+                  0x0026ca                  _close_ADC
+                  0x002192                  _close_UART1
+                  0x002134                  _close_UART2
+                  0x000814                  _cosf
+                  0x000c58                  _fmodf
+                  0x002488                  _getAllDataReceived
+                  0x002476                  _getDataReceived
+                  0x0024de                  _getMediumStatus
+                  0x0024be                  _getModelledDataReceived
+                  0x0025a2                  _initRandomNumberGenerator
+                  0x0026a0                  _init_ADC
+                  0x00268a                  _init_Emmision
+                  0x001f46                  _init_I2C
+                  0x002630                  _init_PWM
+                  0x0015ec                  _init_Reception
+                  0x0026fa                  _init_SPI
+                  0x00266a                  _init_T1
+                  0x002142                  _init_UART1
+                  0x0020fa                  _init_UART2
+                  0x0024e2                  _init_ports
+                  0x001b86                  _init_queue
+                  0x001d30                  _init_queueMultiple
+                  0x001ca6                  _init_queue_final
+                  0x001c2a                  _init_queue_single
+                  0x0023ec                  _init_registers
+                  0x002604                  _main
+                  0x000d58                  _putsUART2
+                  0x000dde                  _rand
+                  0x001f5e                  _read_register
+                  0x0024d0                  _resetAllDataReceived
+                  0x0024ca                  _resetDataReceived
+                  0x0024d4                  _resetModelledDataReceived
+                  0x002438                  _setAllDataReceived
+                  0x002416                  _setDataReceived
+                  0x0024da                  _setMediumStatus
+                  0x002462                  _setModelledDataReceived
+                  0x00089c                  _sqrtf
+                  0x000dd0                  _srand
+                  0x0026ec                  _write_SPI
+                  0x002098                  _write_register
 
 Memory Configuration
 
@@ -680,7 +682,7 @@ LOAD c:/program files/microchip/xc16/v1.70/bin/bin/../../lib\libfx-coff.a
                   0x000002          0x2 SHORT 0x0 ((ABSOLUTE (__reset) >> 0x10) & 0x7f)
                   0x000003          0x2 SHORT 0x0
 
-.text             0x000200       0x1254
+.text             0x000200       0x1262
  *(.init)
  .init            0x000200         0x40 c:/program files/microchip/xc16/v1.70/bin/bin/../../lib\libpic30-coff.a(crt0_standard.o)
                   0x000200                  _resetPRI
@@ -694,105 +696,105 @@ LOAD c:/program files/microchip/xc16/v1.70/bin/bin/../../lib\libfx-coff.a
  *(.isr*)
  .isr.text        0x0002bc         0x76 build/default/production/_ext/1472/I2CSlaveDrv.o
                   0x0002bc                  _SI2C1Interrupt
- .isr.text        0x000332         0x8c build/default/production/_ext/1472/IRReception.o
+ .isr.text        0x000332         0x9a build/default/production/_ext/1472/IRReception.o
                   0x000332                  _T3Interrupt
- .isr.text        0x0003be         0xdc build/default/production/_ext/1472/PWMEmission.o
-                  0x0003be                  _T1Interrupt
- .isr.text        0x00049a        0x17a build/default/production/_ext/1472/UARTDrv.o
-                  0x00049a                  _U2TXInterrupt
-                  0x00049e                  _U2RXInterrupt
-                  0x0005d8                  _U1TXInterrupt
-                  0x0005f4                  _U1RXInterrupt
- .isr             0x000614          0x4 default_isr
-                  0x000614                  _DefaultInterrupt
+ .isr.text        0x0003cc         0xdc build/default/production/_ext/1472/PWMEmission.o
+                  0x0003cc                  _T1Interrupt
+ .isr.text        0x0004a8        0x17a build/default/production/_ext/1472/UARTDrv.o
+                  0x0004a8                  _U2TXInterrupt
+                  0x0004ac                  _U2RXInterrupt
+                  0x0005e6                  _U1TXInterrupt
+                  0x000602                  _U1RXInterrupt
+ .isr             0x000622          0x4 default_isr
+                  0x000622                  _DefaultInterrupt
  *(.libc)
- .libc            0x000618         0x88 c:/program files/microchip/xc16/v1.70/bin/bin/../../lib\libpic30-coff.a(write.o)
-                  0x00061c                  write
+ .libc            0x000626         0x88 c:/program files/microchip/xc16/v1.70/bin/bin/../../lib\libpic30-coff.a(write.o)
+                  0x00062a                  write
  *(.libm)
- .libm            0x0006a0          0x4 c:/program files/microchip/xc16/v1.70/bin/bin/../../lib\libm-coff.a(floatunsisf.o)
-                  0x0006a0                  __floatunsisf
- .libm            0x0006a4         0x68 c:/program files/microchip/xc16/v1.70/bin/bin/../../lib\libm-coff.a(mulsf3.o)
-                  0x0006a4                  __mulsf3
- .libm            0x00070c         0xbc c:/program files/microchip/xc16/v1.70/bin/bin/../../lib\libm-coff.a(addsf3.o)
-                  0x00070c                  __subsf3
-                  0x00070e                  __addsf3
- .libm            0x0007c8          0x4 c:/program files/microchip/xc16/v1.70/bin/bin/../../lib\libm-coff.a(fne.o)
-                  0x0007c8                  __nesf2
- .libm            0x0007cc         0x3a c:/program files/microchip/xc16/v1.70/bin/bin/../../lib\libm-coff.a(atan2f.o)
-                  0x0007cc                  atan2f
- .libm            0x000806          0x4 c:/program files/microchip/xc16/v1.70/bin/bin/../../lib\libm-coff.a(cosf.o)
-                  0x000806                  cosf
- .libm            0x00080a         0x84 c:/program files/microchip/xc16/v1.70/bin/bin/../../lib\libm-coff.a(divsf3.o)
-                  0x00080a                  __divsf3
- .libm            0x00088e         0x6a c:/program files/microchip/xc16/v1.70/bin/bin/../../lib\libm-coff.a(sqrtf.o)
-                  0x00088e                  sqrtf
- .libm            0x0008f8         0x42 c:/program files/microchip/xc16/v1.70/bin/bin/../../lib\libm-coff.a(fixsfsi.o)
-                  0x0008f8                  __fixsfsi
- .libm            0x00093a         0x36 c:/program files/microchip/xc16/v1.70/bin/bin/../../lib\libm-coff.a(fixunssfsi.o)
-                  0x00093a                  __fixunssfsi
- .libm            0x000970         0x5e c:/program files/microchip/xc16/v1.70/bin/bin/../../lib\libm-coff.a(floatundisf.o)
-                  0x000970                  __floatundisf
- .libm            0x0009ce         0x10 c:/program files/microchip/xc16/v1.70/bin/bin/../../lib\libm-coff.a(funpack2.o)
-                  0x0009ce                  _funpack2
- .libm            0x0009de         0x20 c:/program files/microchip/xc16/v1.70/bin/bin/../../lib\libm-coff.a(futil.o)
-                  0x0009de                  _fPropagateNaN
-                  0x0009f0                  _fbopExit
-                  0x0009f8                  _fbopReturnNaN
- .libm            0x0009fe         0x4c c:/program files/microchip/xc16/v1.70/bin/bin/../../lib\libm-coff.a(fpack.o)
-                  0x0009fe                  _fpack
- .libm            0x000a4a         0x36 c:/program files/microchip/xc16/v1.70/bin/bin/../../lib\libm-coff.a(fcompare.o)
-                  0x000a4a                  _fcompare
- .libm            0x000a80         0xca c:/program files/microchip/xc16/v1.70/bin/bin/../../lib\libm-coff.a(atanf.o)
-                  0x000a80                  atanf
- .libm            0x000b4a         0xd2 c:/program files/microchip/xc16/v1.70/bin/bin/../../lib\libm-coff.a(sincosf.o)
-                  0x000b4a                  _sincosf
- .libm            0x000c1c         0x2a c:/program files/microchip/xc16/v1.70/bin/bin/../../lib\libm-coff.a(funpack.o)
-                  0x000c1c                  _funpack
- .libm            0x000c46          0x4 c:/program files/microchip/xc16/v1.70/bin/bin/../../lib\libm-coff.a(feqltle.o)
-                  0x000c46                  __eqsf2
-                  0x000c46                  __ltsf2
-                  0x000c46                  __lesf2
- .libm            0x000c4a          0x4 c:/program files/microchip/xc16/v1.70/bin/bin/../../lib\libm-coff.a(fmodf.o)
-                  0x000c4a                  fmodf
- .libm            0x000c4e          0x6 c:/program files/microchip/xc16/v1.70/bin/bin/../../lib\libm-coff.a(floatsisf.o)
-                  0x000c4e                  __floatsisf
- .libm            0x000c54         0x9e c:/program files/microchip/xc16/v1.70/bin/bin/../../lib\libm-coff.a(fmodrem.o)
-                  0x000c54                  _fmodrem
- .libm            0x000cf2         0x20 c:/program files/microchip/xc16/v1.70/bin/bin/../../lib\libm-coff.a(floatdisf.o)
-                  0x000cf2                  __floatdisf
- .libm            0x000d12          0xc c:/program files/microchip/xc16/v1.70/bin/bin/../../lib\libm-coff.a(mulsi3.o)
-                  0x000d12                  __mulp32peds3
-                  0x000d12                  __mulsi3
-                  0x000d12                  __mulp32eds3
- .libm            0x000d1e         0x20 c:/program files/microchip/xc16/v1.70/bin/bin/../../lib\libm-coff.a(udivsi3.o)
-                  0x000d1e                  __udivsi3
+ .libm            0x0006ae          0x4 c:/program files/microchip/xc16/v1.70/bin/bin/../../lib\libm-coff.a(floatunsisf.o)
+                  0x0006ae                  __floatunsisf
+ .libm            0x0006b2         0x68 c:/program files/microchip/xc16/v1.70/bin/bin/../../lib\libm-coff.a(mulsf3.o)
+                  0x0006b2                  __mulsf3
+ .libm            0x00071a         0xbc c:/program files/microchip/xc16/v1.70/bin/bin/../../lib\libm-coff.a(addsf3.o)
+                  0x00071a                  __subsf3
+                  0x00071c                  __addsf3
+ .libm            0x0007d6          0x4 c:/program files/microchip/xc16/v1.70/bin/bin/../../lib\libm-coff.a(fne.o)
+                  0x0007d6                  __nesf2
+ .libm            0x0007da         0x3a c:/program files/microchip/xc16/v1.70/bin/bin/../../lib\libm-coff.a(atan2f.o)
+                  0x0007da                  atan2f
+ .libm            0x000814          0x4 c:/program files/microchip/xc16/v1.70/bin/bin/../../lib\libm-coff.a(cosf.o)
+                  0x000814                  cosf
+ .libm            0x000818         0x84 c:/program files/microchip/xc16/v1.70/bin/bin/../../lib\libm-coff.a(divsf3.o)
+                  0x000818                  __divsf3
+ .libm            0x00089c         0x6a c:/program files/microchip/xc16/v1.70/bin/bin/../../lib\libm-coff.a(sqrtf.o)
+                  0x00089c                  sqrtf
+ .libm            0x000906         0x42 c:/program files/microchip/xc16/v1.70/bin/bin/../../lib\libm-coff.a(fixsfsi.o)
+                  0x000906                  __fixsfsi
+ .libm            0x000948         0x36 c:/program files/microchip/xc16/v1.70/bin/bin/../../lib\libm-coff.a(fixunssfsi.o)
+                  0x000948                  __fixunssfsi
+ .libm            0x00097e         0x5e c:/program files/microchip/xc16/v1.70/bin/bin/../../lib\libm-coff.a(floatundisf.o)
+                  0x00097e                  __floatundisf
+ .libm            0x0009dc         0x10 c:/program files/microchip/xc16/v1.70/bin/bin/../../lib\libm-coff.a(funpack2.o)
+                  0x0009dc                  _funpack2
+ .libm            0x0009ec         0x20 c:/program files/microchip/xc16/v1.70/bin/bin/../../lib\libm-coff.a(futil.o)
+                  0x0009ec                  _fPropagateNaN
+                  0x0009fe                  _fbopExit
+                  0x000a06                  _fbopReturnNaN
+ .libm            0x000a0c         0x4c c:/program files/microchip/xc16/v1.70/bin/bin/../../lib\libm-coff.a(fpack.o)
+                  0x000a0c                  _fpack
+ .libm            0x000a58         0x36 c:/program files/microchip/xc16/v1.70/bin/bin/../../lib\libm-coff.a(fcompare.o)
+                  0x000a58                  _fcompare
+ .libm            0x000a8e         0xca c:/program files/microchip/xc16/v1.70/bin/bin/../../lib\libm-coff.a(atanf.o)
+                  0x000a8e                  atanf
+ .libm            0x000b58         0xd2 c:/program files/microchip/xc16/v1.70/bin/bin/../../lib\libm-coff.a(sincosf.o)
+                  0x000b58                  _sincosf
+ .libm            0x000c2a         0x2a c:/program files/microchip/xc16/v1.70/bin/bin/../../lib\libm-coff.a(funpack.o)
+                  0x000c2a                  _funpack
+ .libm            0x000c54          0x4 c:/program files/microchip/xc16/v1.70/bin/bin/../../lib\libm-coff.a(feqltle.o)
+                  0x000c54                  __eqsf2
+                  0x000c54                  __ltsf2
+                  0x000c54                  __lesf2
+ .libm            0x000c58          0x4 c:/program files/microchip/xc16/v1.70/bin/bin/../../lib\libm-coff.a(fmodf.o)
+                  0x000c58                  fmodf
+ .libm            0x000c5c          0x6 c:/program files/microchip/xc16/v1.70/bin/bin/../../lib\libm-coff.a(floatsisf.o)
+                  0x000c5c                  __floatsisf
+ .libm            0x000c62         0x9e c:/program files/microchip/xc16/v1.70/bin/bin/../../lib\libm-coff.a(fmodrem.o)
+                  0x000c62                  _fmodrem
+ .libm            0x000d00         0x20 c:/program files/microchip/xc16/v1.70/bin/bin/../../lib\libm-coff.a(floatdisf.o)
+                  0x000d00                  __floatdisf
+ .libm            0x000d20          0xc c:/program files/microchip/xc16/v1.70/bin/bin/../../lib\libm-coff.a(mulsi3.o)
+                  0x000d20                  __mulp32peds3
+                  0x000d20                  __mulsi3
+                  0x000d20                  __mulp32eds3
+ .libm            0x000d2c         0x20 c:/program files/microchip/xc16/v1.70/bin/bin/../../lib\libm-coff.a(udivsi3.o)
+                  0x000d2c                  __udivsi3
  *(.libdsp)
  *(.lib*)
- .libperi         0x000d3e          0xc c:/program files/microchip/xc16/v1.70/bin/bin/../../lib/dsPIC33F\libp33FJ256GP710-coff.a(CloseUART2.o)
-                  0x000d3e                  CloseUART2
- .libperi         0x000d4a         0x28 c:/program files/microchip/xc16/v1.70/bin/bin/../../lib/dsPIC33F\libp33FJ256GP710-coff.a(putsUART2.o)
-                  0x000d4a                  putsUART2
- .libperi         0x000d72          0xa c:/program files/microchip/xc16/v1.70/bin/bin/../../lib/dsPIC33F\libp33FJ256GP710-coff.a(BusyUART2.o)
-                  0x000d72                  BusyUART2
- .libperi         0x000d7c          0xc c:/program files/microchip/xc16/v1.70/bin/bin/../../lib/dsPIC33F\libp33FJ256GP710-coff.a(CloseUART1.o)
-                  0x000d7c                  CloseUART1
- .libperi         0x000d88          0xe c:/program files/microchip/xc16/v1.70/bin/bin/../../lib/dsPIC33F\libp33FJ256GP710-coff.a(WriteUART1.o)
-                  0x000d88                  WriteUART1
+ .libperi         0x000d4c          0xc c:/program files/microchip/xc16/v1.70/bin/bin/../../lib/dsPIC33F\libp33FJ256GP710-coff.a(CloseUART2.o)
+                  0x000d4c                  CloseUART2
+ .libperi         0x000d58         0x28 c:/program files/microchip/xc16/v1.70/bin/bin/../../lib/dsPIC33F\libp33FJ256GP710-coff.a(putsUART2.o)
+                  0x000d58                  putsUART2
+ .libperi         0x000d80          0xa c:/program files/microchip/xc16/v1.70/bin/bin/../../lib/dsPIC33F\libp33FJ256GP710-coff.a(BusyUART2.o)
+                  0x000d80                  BusyUART2
+ .libperi         0x000d8a          0xc c:/program files/microchip/xc16/v1.70/bin/bin/../../lib/dsPIC33F\libp33FJ256GP710-coff.a(CloseUART1.o)
+                  0x000d8a                  CloseUART1
+ .libperi         0x000d96          0xe c:/program files/microchip/xc16/v1.70/bin/bin/../../lib/dsPIC33F\libp33FJ256GP710-coff.a(WriteUART1.o)
+                  0x000d96                  WriteUART1
  .libc._sprintf_cdnopuxX
-                  0x000d96         0x2c c:/program files/microchip/xc16/v1.70/bin/bin/../../lib\libc-coff.a(sprintf_cdnopuxX.XXo)
-                  0x000d96                  _sprintf_cdnopuxX
- .libc.srand      0x000dc2          0xe c:/program files/microchip/xc16/v1.70/bin/bin/../../lib\libc-coff.a(rand.o)
-                  0x000dc2                  srand
- .libc.rand       0x000dd0         0x26 c:/program files/microchip/xc16/v1.70/bin/bin/../../lib\libc-coff.a(rand.o)
-                  0x000dd0                  rand
- .libc.sputc      0x000df6         0x12 c:/program files/microchip/xc16/v1.70/bin/bin/../../lib\libc-coff.a(doprnt_cdnopuxX.XXo)
+                  0x000da4         0x2c c:/program files/microchip/xc16/v1.70/bin/bin/../../lib\libc-coff.a(sprintf_cdnopuxX.XXo)
+                  0x000da4                  _sprintf_cdnopuxX
+ .libc.srand      0x000dd0          0xe c:/program files/microchip/xc16/v1.70/bin/bin/../../lib\libc-coff.a(rand.o)
+                  0x000dd0                  srand
+ .libc.rand       0x000dde         0x26 c:/program files/microchip/xc16/v1.70/bin/bin/../../lib\libc-coff.a(rand.o)
+                  0x000dde                  rand
+ .libc.sputc      0x000e04         0x12 c:/program files/microchip/xc16/v1.70/bin/bin/../../lib\libc-coff.a(doprnt_cdnopuxX.XXo)
  .libc._vfprintf_cdnopuxX
-                  0x000e08        0x548 c:/program files/microchip/xc16/v1.70/bin/bin/../../lib\libc-coff.a(doprnt_cdnopuxX.XXo)
-                  0x000e08                  _vfprintf_cdnopuxX
- .libc.fputc      0x001350         0x86 c:/program files/microchip/xc16/v1.70/bin/bin/../../lib\libc-coff.a(fputc.o)
-                  0x001350                  fputc
- .libc._flsbuf    0x0013d6         0x7e c:/program files/microchip/xc16/v1.70/bin/bin/../../lib\libc-coff.a(flsbuf.o)
-                  0x0013d6                  _flsbuf
+                  0x000e16        0x548 c:/program files/microchip/xc16/v1.70/bin/bin/../../lib\libc-coff.a(doprnt_cdnopuxX.XXo)
+                  0x000e16                  _vfprintf_cdnopuxX
+ .libc.fputc      0x00135e         0x86 c:/program files/microchip/xc16/v1.70/bin/bin/../../lib\libc-coff.a(fputc.o)
+                  0x00135e                  fputc
+ .libc._flsbuf    0x0013e4         0x7e c:/program files/microchip/xc16/v1.70/bin/bin/../../lib\libc-coff.a(flsbuf.o)
+                  0x0013e4                  _flsbuf
 
 usercode
  *(usercode)
@@ -2216,6 +2218,7 @@ __c30_signature
  .nbss              0x0800         0x1e build/default/production/_ext/1472/IRReception.o
                     0x0800                  NumberFrames
                     0x0804                  rx_sensor
+                    0x0805                  reset_peaks
                     0x0806                  calcOnBoard
                     0x0808                  dataInput
                     0x080a                  readFrame
@@ -2368,100 +2371,100 @@ __c30_signature
  .ivt._U1RXInterrupt
                   0x00002a          0x2 build/default/production/_ext/1472/UARTDrv.o
 
-.const              0x9454         0x54 load address 0x001454  
- .const             0x9454         0x2c build/default/production/_ext/1472/UARTDrv.o
- .const             0x9480         0x24 build/default/production/_ext/1472/randb.o
- .const             0x94a4          0x4 build/default/production/_ext/1472/IRReception.o
+.const              0x9462         0x54 load address 0x001462  
+ .const             0x9462         0x2c build/default/production/_ext/1472/UARTDrv.o
+ .const             0x948e         0x24 build/default/production/_ext/1472/randb.o
+ .const             0x94b2          0x4 build/default/production/_ext/1472/IRReception.o
 
-.text             0x0014a8        0xdde
- .text            0x0014a8        0x6ce build/default/production/_ext/1472/IRReception.o
-                  0x0014a8                  ReadAllIrPeaks
-                  0x0014c4                  InitAllIrPeaks
-                  0x0014d8                  ReadIrPeak
-                  0x0014f8                  DisableAllIrPeaks
-                  0x001512                  ResetIrPeak
-                  0x0015de                  init_Reception
-                  0x0016ae                  EnableAllIrPeaks
-                  0x0016c8                  EnableIrPeak
-                  0x00171c                  DisableIrPeak
-                  0x001770                  GetReceptionFrame
-                  0x001778                  SetReceptionFrame
-                  0x001780                  DecodeData
-                  0x001b4a                  GetReceptionData
-                  0x001b52                  SetReceptionData
-                  0x001b6c                  GetCalcOnBoard
-                  0x001b70                  SetCalcOnBoard
- .text            0x001b76        0x20a build/default/production/_ext/1472/queue.o
-                  0x001b76                  init_queue
-                  0x001b8c                  QueueIn
-                  0x001bca                  QueueOut
-                  0x001c0a                  QueueEmpty
-                  0x001c1a                  init_queue_single
-                  0x001c26                  QueueInSingle
-                  0x001c50                  QueueOutSingle
-                  0x001c78                  QueueEmptySingle
-                  0x001c86                  QueueStatusSingle
-                  0x001c8a                  QueueClearSingle
-                  0x001c96                  init_queue_final
-                  0x001ca2                  QueueInFinal
-                  0x001ce4                  QueueOutFinal
-                  0x001d12                  QueueEmptyFinal
-                  0x001d20                  init_queueMultiple
-                  0x001d2a                  QueueInMultiple
-                  0x001d4a                  QueueOutMultiple
-                  0x001d72                  QueueEmptyMultiple
- .text            0x001d80        0x1b6 build/default/production/_ext/1472/IREmission.o
-                  0x001d80                  StoreIrData
-                  0x001d8e                  WriteIrData
-                  0x001f22                  WriteAllIrData
- .text            0x001f36        0x1b4 build/default/production/_ext/1472/I2CSlaveDrv.o
-                  0x001f36                  init_I2C
-                  0x001f4e                  read_register
-                  0x002088                  write_register
- .text            0x0020ea        0x19c build/default/production/_ext/1472/UARTDrv.o
-                  0x0020ea                  init_UART2
-                  0x002124                  close_UART2
-                  0x002128                  WriteUart2
-                  0x002132                  init_UART1
-                  0x002182                  close_UART1
-                  0x002186                  WriteUart1
-                  0x0021a4                  EmptyRxQueue
-                  0x0021aa                  SetUart1Communication
-                  0x0021ae                  ManageUart1Reception
-                  0x002282                  GetUart1Communication
+.text             0x0014b6        0xde0
+ .text            0x0014b6        0x6d0 build/default/production/_ext/1472/IRReception.o
+                  0x0014b6                  ReadAllIrPeaks
+                  0x0014d2                  InitAllIrPeaks
+                  0x0014e6                  ReadIrPeak
+                  0x001506                  DisableAllIrPeaks
+                  0x001520                  ResetIrPeak
+                  0x0015ec                  init_Reception
+                  0x0016bc                  EnableAllIrPeaks
+                  0x0016d6                  EnableIrPeak
+                  0x00172a                  DisableIrPeak
+                  0x00177e                  GetReceptionFrame
+                  0x001786                  SetReceptionFrame
+                  0x00178e                  DecodeData
+                  0x001b5a                  GetReceptionData
+                  0x001b62                  SetReceptionData
+                  0x001b7c                  GetCalcOnBoard
+                  0x001b80                  SetCalcOnBoard
+ .text            0x001b86        0x20a build/default/production/_ext/1472/queue.o
+                  0x001b86                  init_queue
+                  0x001b9c                  QueueIn
+                  0x001bda                  QueueOut
+                  0x001c1a                  QueueEmpty
+                  0x001c2a                  init_queue_single
+                  0x001c36                  QueueInSingle
+                  0x001c60                  QueueOutSingle
+                  0x001c88                  QueueEmptySingle
+                  0x001c96                  QueueStatusSingle
+                  0x001c9a                  QueueClearSingle
+                  0x001ca6                  init_queue_final
+                  0x001cb2                  QueueInFinal
+                  0x001cf4                  QueueOutFinal
+                  0x001d22                  QueueEmptyFinal
+                  0x001d30                  init_queueMultiple
+                  0x001d3a                  QueueInMultiple
+                  0x001d5a                  QueueOutMultiple
+                  0x001d82                  QueueEmptyMultiple
+ .text            0x001d90        0x1b6 build/default/production/_ext/1472/IREmission.o
+                  0x001d90                  StoreIrData
+                  0x001d9e                  WriteIrData
+                  0x001f32                  WriteAllIrData
+ .text            0x001f46        0x1b4 build/default/production/_ext/1472/I2CSlaveDrv.o
+                  0x001f46                  init_I2C
+                  0x001f5e                  read_register
+                  0x002098                  write_register
+ .text            0x0020fa        0x19c build/default/production/_ext/1472/UARTDrv.o
+                  0x0020fa                  init_UART2
+                  0x002134                  close_UART2
+                  0x002138                  WriteUart2
+                  0x002142                  init_UART1
+                  0x002192                  close_UART1
+                  0x002196                  WriteUart1
+                  0x0021b4                  EmptyRxQueue
+                  0x0021ba                  SetUart1Communication
+                  0x0021be                  ManageUart1Reception
+                  0x002292                  GetUart1Communication
 
-.dinit            0x002286        0x156
- .dinit           0x002286        0x156 data_init
+.dinit            0x002296        0x156
+ .dinit           0x002296        0x156 data_init
 
-.text             0x0023dc        0x33c
- .text            0x0023dc         0xf6 build/default/production/_ext/1472/registers.o
-                  0x0023dc                  init_registers
-                  0x002406                  setDataReceived
-                  0x002428                  setAllDataReceived
-                  0x002452                  setModelledDataReceived
-                  0x002466                  getDataReceived
-                  0x002478                  getAllDataReceived
-                  0x0024ae                  getModelledDataReceived
-                  0x0024ba                  resetDataReceived
-                  0x0024c0                  resetAllDataReceived
-                  0x0024c4                  resetModelledDataReceived
-                  0x0024ca                  setMediumStatus
-                  0x0024ce                  getMediumStatus
- .text            0x0024d2         0xc0 build/default/production/_ext/1472/ports.o
-                  0x0024d2                  init_ports
- .text            0x002592         0x8e build/default/production/_ext/1472/randb.o
-                  0x002592                  initRandomNumberGenerator
-                  0x0025f4                  main
- .text            0x002620         0x70 build/default/production/_ext/1472/PWMEmission.o
-                  0x002620                  init_PWM
-                  0x00265a                  init_T1
-                  0x00267a                  init_Emmision
-                  0x002680                  GetEmissionFrame
-                  0x002688                  SetEmissionFrame
- .text            0x002690         0x4c build/default/production/_ext/1472/ADCDrv.o
-                  0x002690                  init_ADC
-                  0x0026ba                  close_ADC
-                  0x0026bc                  ReadADC
- .text            0x0026dc         0x3c build/default/production/_ext/1472/SPIMasterDrv.o
-                  0x0026dc                  write_SPI
-                  0x0026ea                  init_SPI
+.text             0x0023ec        0x33c
+ .text            0x0023ec         0xf6 build/default/production/_ext/1472/registers.o
+                  0x0023ec                  init_registers
+                  0x002416                  setDataReceived
+                  0x002438                  setAllDataReceived
+                  0x002462                  setModelledDataReceived
+                  0x002476                  getDataReceived
+                  0x002488                  getAllDataReceived
+                  0x0024be                  getModelledDataReceived
+                  0x0024ca                  resetDataReceived
+                  0x0024d0                  resetAllDataReceived
+                  0x0024d4                  resetModelledDataReceived
+                  0x0024da                  setMediumStatus
+                  0x0024de                  getMediumStatus
+ .text            0x0024e2         0xc0 build/default/production/_ext/1472/ports.o
+                  0x0024e2                  init_ports
+ .text            0x0025a2         0x8e build/default/production/_ext/1472/randb.o
+                  0x0025a2                  initRandomNumberGenerator
+                  0x002604                  main
+ .text            0x002630         0x70 build/default/production/_ext/1472/PWMEmission.o
+                  0x002630                  init_PWM
+                  0x00266a                  init_T1
+                  0x00268a                  init_Emmision
+                  0x002690                  GetEmissionFrame
+                  0x002698                  SetEmissionFrame
+ .text            0x0026a0         0x4c build/default/production/_ext/1472/ADCDrv.o
+                  0x0026a0                  init_ADC
+                  0x0026ca                  close_ADC
+                  0x0026cc                  ReadADC
+ .text            0x0026ec         0x3c build/default/production/_ext/1472/SPIMasterDrv.o
+                  0x0026ec                  write_SPI
+                  0x0026fa                  init_SPI

@@ -144,7 +144,7 @@ void __attribute__((__interrupt__, no_auto_psv)) _T1Interrupt(void)
 	aux &= 0x00C6;	
 
     // Make a "frame" pause when switching between 455 KHz and 57.6 KHz for the transmission of the data.
-    // This pause helps the receiver not to mix the two signals.
+    // This pause helps the receiver not to mix the two signals and to satisfy the receiver specifications.
     if(pause_between_carriers == 1) {
         bufferIndex++;
         if(bufferIndex == FRAME_BITS){
