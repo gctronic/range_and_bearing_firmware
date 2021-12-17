@@ -4,9 +4,11 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/F:/_projects/range_and_bearing_firmware/registers.h</file>
+            <file>file:/F:/_projects/range_and_bearing_firmware/IREmission.c</file>
             <file>file:/F:/_projects/range_and_bearing_firmware/PWMEmission.h</file>
             <file>file:/F:/_projects/range_and_bearing_firmware/PWMEmission.c</file>
             <file>file:/F:/_projects/range_and_bearing_firmware/IRReception.c</file>
+            <file>file:/F:/_projects/range_and_bearing_firmware/I2CSlaveDrv.c</file>
         </group>
     </open-files>
 </project-private>

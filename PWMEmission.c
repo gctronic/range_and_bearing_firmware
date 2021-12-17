@@ -24,7 +24,7 @@ unsigned char curr_carrier = CARRIER_455_KHZ;
 unsigned char pause_between_carriers = 0;
 unsigned char change_carrier = 0;
 extern uint8_t tx_power;
-uint16_t tx_power_temp;
+extern uint8_t tx_power_adapted;
 
 queue queueEmission;
 
@@ -163,17 +163,7 @@ void __attribute__((__interrupt__, no_auto_psv)) _T1Interrupt(void)
         if(curr_carrier == CARRIER_455_KHZ) {
             // Adapt the transmission power to get a similar communication range when using the 57.6 KHz receivers.
             // The digital potentiometer will take about 1 ms to actually change the transmission power.
-            if(tx_power <= 100) {
-                write_SPI(0);
-            } else if(tx_power <= 175) {
-                tx_power_temp = (tx_power<<1)-200;
-                write_SPI(tx_power_temp);
-            } else if(tx_power <= 218) {
-                tx_power_temp = ((3*tx_power)>>1)-127;
-                write_SPI(tx_power_temp);
-            } else {
-                write_SPI(200);
-            }
+            write_SPI(tx_power_adapted);
             curr_carrier = CARRIER_57_6_KHZ;
             PR1 = 5733;
             PR2 = 710;

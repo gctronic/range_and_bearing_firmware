@@ -25,6 +25,8 @@ dataRegisterReceived dataAll[12];
 unsigned int maxData;
 finalDataRegister finalData;
 uint8_t tx_power = 150; // Default
+uint8_t tx_power_adapted = 108; // Default
+int32_t tx_power_temp;
 unsigned char auxValue=0;
 
 //Functions prototype
@@ -256,6 +258,20 @@ void write_register(char reg_add, unsigned char value)
 		/* Change Power Transmission */
 		case 12:
             tx_power = value;
+            if(tx_power <= 110) {
+                tx_power_adapted = 0;
+            } else if(tx_power <= 225) {
+                tx_power_temp = -((int32_t)((int32_t)tx_power*(int32_t)tx_power)>>6) + (tx_power<<3) - tx_power - 590;
+                if(tx_power_temp < 0) {
+                    tx_power_temp = 0;
+                }
+                if(tx_power_temp > 195) {
+                    tx_power_temp = 195;
+                }
+                tx_power_adapted = tx_power_temp;
+            } else {
+                tx_power_adapted = 195;
+            }            
 			break;
 		
 		/* Write All values and send values */
